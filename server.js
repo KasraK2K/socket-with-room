@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
     socket.join(roomName);
     io.to(id).emit("room event", roomName, name); // NOTE : room message - we can use it as private message
     // socket.emit("room event", roomName, name);
-    io.to(roomName).emit("join room event", roomName, name);
+    socket.broadcast.to(roomName).emit("join room event", roomName, name);
   });
 
   socket.on("disconnect", () => {
