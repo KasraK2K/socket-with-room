@@ -1,0 +1,19 @@
+{
+  "name": "socket-course",
+  "version": "1.0.0",
+  "description": "Try to learn Socket.io",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon"
+  },
+  "author": "Kasra.Karami.KK <Kasra.Karami.KK@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  }
+}

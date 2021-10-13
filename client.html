@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap"
+      rel="stylesheet"
+    /> -->
+
+    <style>
+      /* * {
+        font-family: "Permanent Marker", cursive;
+      } */
+      body {
+        background-color: #102027;
+        color: white;
+      }
+      li:nth-child(odd) {
+        background-color: #1c313a;
+      }
+      li:nth-child(even) {
+        background-color: #9daab1;
+        color: black;
+      }
+    </style>
+
+    <title>Client Side Socket.io</title>
+  </head>
+  <body>
+    <div class="container my-5">
+      <h1 class="text-center mb-5">
+        Learn Socket.io
+        <span
+          id="onlineUsers"
+          class="badge"
+          style="background-color: rgb(118, 209, 248)"
+        ></span>
+      </h1>
+
+      <div class="d-flex justify-content-center">
+        <button id="room1" class="btn btn-primary mx-3">Room 1</button>
+        <button id="room2" class="btn btn-warning mx-3">Room 2</button>
+        <button id="room3" class="btn btn-danger mx-3">Room 3</button>
+      </div>
+
+      <div class="d-flex flex-row justify-content-center mt-5">
+        <ul id="list" class="list-unstyled" style="width: 800px"></ul>
+      </div>
+    </div>
+
+    <div
+      class="position-absolute bottom-0 start-50 translate-middle-x"
+      style="width: 800px"
+    >
+      <form id="form">
+        <input
+          type="text"
+          id="message"
+          class="form-control p-3"
+          placeholder="Please write your message ..."
+        />
+      </form>
+    </div>
+
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="https://cdn.socket.io/4.2.0/socket.io.min.js"></script>
+    <script>
+      // Variables
+      const socket = io("http://localhost:3000");
+      const form = document.getElementById("form");
+      const input = document.getElementById("message");
+      const list = document.getElementById("list");
+      const nickname = prompt("Please say your name:");
+      const room1 = document.getElementById("room1");
+      const room2 = document.getElementById("room2");
+      const room3 = document.getElementById("room3");
+      const onlineUsers = document.getElementById("onlineUsers");
+
+      // Listeners
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        socket.emit("newMessage", nickname, input.value);
+        addMessage(nickname, input.value);
+        input.value = "";
+      });
+
+      // room1
+      room1.addEventListener("click", () => {
+        socket.emit("join room", nickname, "Room 1");
+      });
+
+      // room2
+      room2.addEventListener("click", () => {
+        socket.emit("join room", nickname, "Room 2");
+      });
+
+      // room3
+      room3.addEventListener("click", () => {
+        socket.emit("join room", nickname, "Room 3");
+      });
+
+      // Events
+      socket.on("online users changed", (onlineUserCount) => {
+        onlineUsers.textContent = onlineUserCount;
+      });
+
+      socket.on("newMessage", (nickname, message) =>
+        addMessage(nickname, message)
+      );
+
+      socket.on("room event", (roomName, name) => {
+        console.log(`Dear ${name} you are joined to room ${roomName}`);
+      });
+
+      socket.on("join room event", (roomName, name) => {
+        console.log(`${name} is joined to your room with name: ${roomName}`);
+      });
+
+      // Functions
+      function addMessage(nickname, message) {
+        const li = document.createElement("li");
+        li.className = "rounded p-3 mb-2";
+        li.textContent = `${nickname}: ${message}`;
+        list.appendChild(li);
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+    </script>
+  </body>
+</html>
